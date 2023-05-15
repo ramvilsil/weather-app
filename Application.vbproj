@@ -5,7 +5,16 @@
     <TargetFramework>net7.0-windows</TargetFramework>
     <RootNamespace>Application</RootNamespace>
     <UseWPF>true</UseWPF>
+    <ApplicationIcon>Application.ico</ApplicationIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Models\WeatherInfo.vb" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Application.ico" />
+  </ItemGroup>
 
   <ItemGroup>
     <Import Include="System.Windows" />
@@ -17,6 +26,14 @@
     <Import Include="System.Windows.Media.Imaging" />
     <Import Include="System.Windows.Navigation" />
     <Import Include="System.Windows.Shapes" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Models\WeatherInfo.vb" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NUnit" Version="3.13.3" />
   </ItemGroup>
 
 </Project>
