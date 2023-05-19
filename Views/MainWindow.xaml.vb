@@ -1,24 +1,21 @@
 ﻿Imports Application.ViewModels
+Imports Application.Models
 
 Namespace Views
 
     Class MainWindow
+        Private viewModel As New MainWindowViewModel()
 
-        Private Sub Submit(sender As Object, e As RoutedEventArgs)
-            Dim name As String = txtName.Text
-            Dim email As String = txtEmail.Text
-
-            MessageBox.Show($"Name: {name}{Environment.NewLine}Email: {email}", "Form Data")
+        Public Sub New()
+            InitializeComponent()
+            DataContext = viewModel
         End Sub
 
-        Private Async Sub Button_Click(sender As Object, e As RoutedEventArgs)
-            Dim viewModel As MainWindowViewModel = TryCast(DataContext, MainWindowViewModel)
-
-            Dim response As String = Await viewModel.PostDataAsync()
-
-            MessageBox.Show($"{response}")
+        Private Async Sub GetWeatherData(sender As Object, e As RoutedEventArgs)
+            Dim ipAddress as String = viewModel.GetIpAddress()
+            Dim currentWeatherData As CurrentWeather = Await viewModel.GetWeatherDataAsync(ipAddress)
+            viewModel.Geolocation = currentWeatherData.Geolocation
         End Sub
-
     End Class
 
 End Namespace
