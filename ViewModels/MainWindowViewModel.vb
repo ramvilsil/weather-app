@@ -10,9 +10,17 @@ Namespace ViewModels
     Public Class MainWindowViewModel
         Implements INotifyPropertyChanged
 
+        Private ReadOnly _webClient As WebClient
+        Private ReadOnly _httpClient As HttpClient
+
         Public Event PropertyChanged As PropertyChangedEventHandler Implements INotifyPropertyChanged.PropertyChanged
 
         Private _geolocation As String
+
+        Public Sub New(webClient As WebClient, httpClient As HttpClient)
+            _webClient = webClient
+            _httpClient = httpClient
+        End Sub
 
         Public Property Geolocation As String
             Get
@@ -30,8 +38,7 @@ Namespace ViewModels
 
         Public Function GetIpAddress() As String
             Try
-                Dim webClient As New WebClient()
-                Dim result As String = webClient.DownloadString("https://api.ipify.org")
+                Dim result As String = _webClient.DownloadString("https://api.ipify.org")
                 Return result
             Catch ex As Exception
                 Console.WriteLine(ex.Message)
@@ -40,7 +47,6 @@ Namespace ViewModels
         End Function
 
         Public Async Function GetWeatherDataAsync(ipAddress As String) As Task(Of CurrentWeather)
-            Dim client As New HttpClient()
             Dim apiUrl As String = "http://127.0.0.1:8000/api/weather"
 
             Dim requestBodyJson As String = JsonConvert.SerializeObject(
@@ -52,7 +58,7 @@ Namespace ViewModels
 
             Dim content As New StringContent(requestBodyJson, Encoding.UTF8, "application/json")
 
-            Dim response As HttpResponseMessage = Await client.PostAsync(apiUrl, content)
+            Dim response As HttpResponseMessage = Await _httpClient.PostAsync(apiUrl, content)
 
             If response.IsSuccessStatusCode Then
 

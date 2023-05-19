@@ -7,12 +7,6 @@
         mc:Ignorable="d"
         Height="350" Width="525"
         Loaded="GetWeatherData">
-    <Window.Resources>
-        <vm:MainWindowViewModel x:Key="ViewModel"/>
-    </Window.Resources>
-    <Window.DataContext>
-        <Binding Source="{StaticResource ViewModel}" />
-    </Window.DataContext>
 
     <DockPanel>
         <!-- Navbar -->
