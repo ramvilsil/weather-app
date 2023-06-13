@@ -1,7 +1,5 @@
-﻿Imports System.Net.Http
-Imports System.Text
-Imports System.Net
-Imports System.ComponentModel
+﻿Imports System.ComponentModel
+Imports System.Net.Http
 Imports Newtonsoft.Json
 Imports Application.Models
 
@@ -10,25 +8,23 @@ Namespace ViewModels
     Public Class MainWindowViewModel
         Implements INotifyPropertyChanged
 
-        Private ReadOnly _webClient As WebClient
+        Public Event PropertyChanged As PropertyChangedEventHandler Implements INotifyPropertyChanged.PropertyChanged
+        Private _currentWeather As CurrentWeather
         Private ReadOnly _httpClient As HttpClient
 
-        Public Event PropertyChanged As PropertyChangedEventHandler Implements INotifyPropertyChanged.PropertyChanged
-
-        Private _geolocation As String
-
-        Public Sub New(webClient As WebClient, httpClient As HttpClient)
-            _webClient = webClient
+        Public Sub New(httpClient As HttpClient)
             _httpClient = httpClient
+            _currentWeather = New CurrentWeather
+            GetCurrentWeather()
         End Sub
 
-        Public Property Geolocation As String
+        Public Property CurrentWeather As CurrentWeather
             Get
-                Return _geolocation
+                Return _currentWeather
             End Get
-            Set(value As String)
-                _geolocation = value
-                OnPropertyChanged("Geolocation")
+            Set(value As CurrentWeather)
+                _currentWeather = value
+                OnPropertyChanged(NameOf(CurrentWeather))
             End Set
         End Property
 
@@ -36,41 +32,36 @@ Namespace ViewModels
             RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(propertyName))
         End Sub
 
-        Public Function GetIpAddress() As String
+        Public Async Sub GetCurrentWeather()
+
+            Dim apiUrl As String = "https://weather-service-vbnet.azurewebsites.net/api/currentweather"
+
+            Dim currentWeather As CurrentWeather
             Try
-                Dim result As String = _webClient.DownloadString("https://api.ipify.org")
-                Return result
+                Dim response = Await _httpClient.GetAsync(apiUrl)
+
+                response.EnsureSuccessStatusCode()
+
+                Dim content = Await response.Content.ReadAsStringAsync()
+                Dim data = JsonConvert.DeserializeObject(Of CurrentWeather)(content)
+
+                currentWeather = data
+
+            Catch ex As HttpRequestException
+                Console.WriteLine("An error occurred during the HTTP request: " & ex.Message)
+
+            Catch ex As JsonException
+                Console.WriteLine("An error occurred while deserializing the JSON response: " & ex.Message)
+
             Catch ex As Exception
-                Console.WriteLine(ex.Message)
+                Console.WriteLine("An error occurred: " & ex.Message)
+
             End Try
-            Return Nothing
-        End Function
 
-        Public Async Function GetWeatherDataAsync(ipAddress As String) As Task(Of CurrentWeather)
-            Dim apiUrl As String = "http://127.0.0.1:8000/api/weather"
+            _currentWeather = currentWeather
+            OnPropertyChanged(NameOf(currentWeather))
 
-            Dim requestBodyJson As String = JsonConvert.SerializeObject(
-                New With
-                {
-                    .IpAddress = ipAddress
-                }
-            )
-
-            Dim content As New StringContent(requestBodyJson, Encoding.UTF8, "application/json")
-
-            Dim response As HttpResponseMessage = Await _httpClient.PostAsync(apiUrl, content)
-
-            If response.IsSuccessStatusCode Then
-
-                Dim responseContent As String = response.Content.ReadAsStringAsync().Result
-                Dim currentWeatherData As CurrentWeather = JsonConvert.DeserializeObject(Of CurrentWeather)(responseContent)
-                Return currentWeatherData
-
-            Else
-                Console.WriteLine("Error: " & response.StatusCode)
-                Return Nothing
-            End If
-        End Function
+        End Sub
 
     End Class
 

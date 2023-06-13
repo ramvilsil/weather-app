@@ -7,7 +7,8 @@
         Public Property TemperatureF As Double
         Public Property Condition As String
         Public Property Humidity As Integer
-        Public Property Wind As Double
+        Public Property WindMph As Double
+        Public Property WindKph As Double
 
     End Class
 
