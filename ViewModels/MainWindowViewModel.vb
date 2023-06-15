@@ -11,6 +11,8 @@ Namespace ViewModels
         Public Event PropertyChanged As PropertyChangedEventHandler Implements INotifyPropertyChanged.PropertyChanged
         Private ReadOnly _httpClient As HttpClient
 
+        Private Const _weatherServiceApiUrl As String = "https://weather-service-vbnet.azurewebsites.net/api/currentweather"
+
         Private _currentWeather As CurrentWeather
         Private _backgroundImage As String
 
@@ -46,10 +48,8 @@ Namespace ViewModels
 
         Public Async Sub GetCurrentWeather()
 
-            Dim apiUrl As String = "https://weather-service-vbnet.azurewebsites.net/api/currentweather"
-
             Try
-                Dim response = Await _httpClient.GetAsync(apiUrl)
+                Dim response = Await _httpClient.GetAsync(_weatherServiceApiUrl)
 
                 response.EnsureSuccessStatusCode()
 
@@ -75,18 +75,16 @@ Namespace ViewModels
         End Sub
 
         Private Sub SetBackgroundImage(weatherCondition As String)
-            If weatherCondition = "Cloudy" Then
-                _backgroundImage = "https://images.pexels.com/photos/1254736/pexels-photo-1254736.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-            End If
-            If weatherCondition = "Sunny" Then
-                _backgroundImage = "https://images.pexels.com/photos/912364/pexels-photo-912364.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-            End If
-            If weatherCondition = "Rainy" Then
-                _backgroundImage = "https://images.pexels.com/photos/166360/pexels-photo-166360.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-            End If
-            If weatherCondition = "Snowy" Then
-                _backgroundImage = "https://images.pexels.com/photos/688660/pexels-photo-688660.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-            End If
+            Select Case weatherCondition
+                Case "Cloudy"
+                    _backgroundImage = "https://images.pexels.com/photos/1254736/pexels-photo-1254736.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                Case "Sunny"
+                    _backgroundImage = "https://images.pexels.com/photos/912364/pexels-photo-912364.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                Case "Rainy"
+                    _backgroundImage = "https://images.pexels.com/photos/166360/pexels-photo-166360.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                Case "Snowy"
+                    _backgroundImage = "https://images.pexels.com/photos/688660/pexels-photo-688660.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+            End Select
         End Sub
 
     End Class
