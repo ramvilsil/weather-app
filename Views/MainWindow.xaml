@@ -1,31 +1,59 @@
 ﻿<Window x:Class="Views.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        mc:Ignorable="d"
-        Height="350" Width="525"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    mc:Ignorable="d"
+    WindowState="Maximized"
 >
 
     <Grid>
-        <Image Stretch="UniformToFill" Source="https://images.pexels.com/photos/688660/pexels-photo-688660.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=1260&amp;h=750&amp;dpr=1" />
-        <Rectangle Stretch="UniformToFill" Fill="Black" Opacity="0.5" />
-        
-        <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
-            <StackPanel.Resources>
-                <Style TargetType="TextBlock">
-                    <Setter Property="Foreground" Value="White" />
-                    <Setter Property="FontSize" Value="24" />
-                </Style>
-            </StackPanel.Resources>
-            <TextBlock Text="{Binding Path=CurrentWeather.Geolocation, StringFormat='Geolocation: {0}', FallbackValue='Not available', PresentationTraceSources.TraceLevel=High}" />
-            <TextBlock Text="{Binding Path=CurrentWeather.TemperatureC, StringFormat=' {0}°C', FallbackValue='Not available', PresentationTraceSources.TraceLevel=High}" />
-            <TextBlock Text="{Binding Path=CurrentWeather.TemperatureF, StringFormat=' {0} °F', FallbackValue='Not available', PresentationTraceSources.TraceLevel=High}" />
-            <TextBlock Text="{Binding Path=CurrentWeather.Condition, StringFormat='Condition: {0}', FallbackValue='Not available', PresentationTraceSources.TraceLevel=High}" />
-            <TextBlock Text="{Binding Path=CurrentWeather.Humidity, StringFormat='Humidity: {0}', FallbackValue='Not available', PresentationTraceSources.TraceLevel=High}" />
-            <TextBlock Text="{Binding Path=CurrentWeather.WindMph, StringFormat='Wind: {0} MPH', FallbackValue='Not available', PresentationTraceSources.TraceLevel=High}" />
-            <TextBlock Text="{Binding Path=CurrentWeather.WindKph, StringFormat='Wind: {0} KPH', FallbackValue='Not available', PresentationTraceSources.TraceLevel=High}" />
-        </StackPanel>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Viewbox Stretch="Uniform">
+            <Grid>
+                <Image Stretch="UniformToFill" Source="{Binding BackgroundImage}" />
+                <Rectangle Stretch="UniformToFill" Fill="Black" Opacity="0.5" />
+
+                <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
+                    <StackPanel.Resources>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Foreground" Value="White" />
+                            <Setter Property="FontSize" Value="48" />
+                        </Style>
+                    </StackPanel.Resources>
+
+                    <TextBlock Text="{Binding Path=CurrentWeather.Geolocation, StringFormat='Geolocation: {0}', FallbackValue='N/A', PresentationTraceSources.TraceLevel=High}" />
+
+                    <TextBlock>
+                        <TextBlock.Text>
+                            <MultiBinding StringFormat="{}Temperature: {0}°C / {1}°F">
+                                <Binding Path="CurrentWeather.TemperatureC" FallbackValue="N/A" />
+                                <Binding Path="CurrentWeather.TemperatureF" FallbackValue="N/A" />
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
+
+                    <TextBlock Text="{Binding Path=CurrentWeather.Condition, StringFormat='Condition: {0}', FallbackValue='N/A', PresentationTraceSources.TraceLevel=High}" />
+                    <TextBlock Text="{Binding Path=CurrentWeather.Humidity, StringFormat='Humidity: {0}', FallbackValue='N/A', PresentationTraceSources.TraceLevel=High}" />
+
+                    <TextBlock>
+                        <TextBlock.Text>
+                            <MultiBinding StringFormat="{}Wind: {0} KPH / {1} MPH">
+                                <Binding Path="CurrentWeather.WindKph" FallbackValue="N/A" />
+                                <Binding Path="CurrentWeather.WindMph" FallbackValue="N/A" />
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
+
+                </StackPanel>
+            </Grid>
+        </Viewbox>
     </Grid>
-    
+
 </Window>

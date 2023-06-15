@@ -9,8 +9,10 @@ Namespace ViewModels
         Implements INotifyPropertyChanged
 
         Public Event PropertyChanged As PropertyChangedEventHandler Implements INotifyPropertyChanged.PropertyChanged
-        Private _currentWeather As CurrentWeather
         Private ReadOnly _httpClient As HttpClient
+
+        Private _currentWeather As CurrentWeather
+        Private _backgroundImage As String
 
         Public Sub New(httpClient As HttpClient)
             _httpClient = httpClient
@@ -28,6 +30,16 @@ Namespace ViewModels
             End Set
         End Property
 
+        Public Property BackgroundImage As String
+            Get
+                Return _backgroundImage
+            End Get
+            Set(value As String)
+                _backgroundImage = value
+                OnPropertyChanged(NameOf(BackgroundImage))
+            End Set
+        End Property
+
         Protected Sub OnPropertyChanged(propertyName As String)
             RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(propertyName))
         End Sub
@@ -36,31 +48,45 @@ Namespace ViewModels
 
             Dim apiUrl As String = "https://weather-service-vbnet.azurewebsites.net/api/currentweather"
 
-            Dim currentWeather As CurrentWeather
             Try
                 Dim response = Await _httpClient.GetAsync(apiUrl)
 
                 response.EnsureSuccessStatusCode()
 
                 Dim content = Await response.Content.ReadAsStringAsync()
-                Dim data = JsonConvert.DeserializeObject(Of CurrentWeather)(content)
 
-                currentWeather = data
+                _currentWeather = JsonConvert.DeserializeObject(Of CurrentWeather)(content)
 
             Catch ex As HttpRequestException
-                Console.WriteLine("An error occurred during the HTTP request: " & ex.Message)
+                Debug.WriteLine("An error occurred during the HTTP request: " & ex.Message)
 
             Catch ex As JsonException
-                Console.WriteLine("An error occurred while deserializing the JSON response: " & ex.Message)
+                Debug.WriteLine("An error occurred while deserializing the JSON response: " & ex.Message)
 
             Catch ex As Exception
-                Console.WriteLine("An error occurred: " & ex.Message)
+                Debug.WriteLine("An error occurred: " & ex.Message)
 
             End Try
 
-            _currentWeather = currentWeather
-            OnPropertyChanged(NameOf(currentWeather))
+            SetBackgroundImage(_currentWeather.Condition)
 
+            OnPropertyChanged(NameOf(CurrentWeather))
+            OnPropertyChanged(NameOf(BackgroundImage))
+        End Sub
+
+        Private Sub SetBackgroundImage(weatherCondition As String)
+            If weatherCondition = "Cloudy" Then
+                _backgroundImage = "https://images.pexels.com/photos/1254736/pexels-photo-1254736.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+            End If
+            If weatherCondition = "Sunny" Then
+                _backgroundImage = "https://images.pexels.com/photos/912364/pexels-photo-912364.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+            End If
+            If weatherCondition = "Rainy" Then
+                _backgroundImage = "https://images.pexels.com/photos/166360/pexels-photo-166360.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+            End If
+            If weatherCondition = "Snowy" Then
+                _backgroundImage = "https://images.pexels.com/photos/688660/pexels-photo-688660.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+            End If
         End Sub
 
     End Class
