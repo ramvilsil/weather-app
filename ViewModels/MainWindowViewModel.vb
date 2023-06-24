@@ -29,7 +29,27 @@ Namespace ViewModels
             Set(value As CurrentWeather)
                 _currentWeather = value
                 OnPropertyChanged(NameOf(CurrentWeather))
+                OnPropertyChanged(NameOf(GeolocationDisplay))
             End Set
+        End Property
+
+        Public ReadOnly Property GeolocationDisplay As String
+            Get
+                If _currentWeather.Geolocation Is Nothing Then
+                    Return "N/A"
+                End If
+
+                Dim geolocation As New List(Of String)
+
+                If Not String.IsNullOrEmpty(_currentWeather.Geolocation.City) Then geolocation.Add(_currentWeather.Geolocation.City)
+                If Not String.IsNullOrEmpty(_currentWeather.Geolocation.Region) Then geolocation.Add(_currentWeather.Geolocation.Region)
+                If Not String.IsNullOrEmpty(_currentWeather.Geolocation.Country) Then geolocation.Add(_currentWeather.Geolocation.Country)
+
+                Dim geolocationString = String.Join(", ", geolocation)
+
+                Debug.WriteLine(geolocationString)
+                Return geolocationString
+            End Get
         End Property
 
         Public Property BackgroundImage As String
@@ -55,7 +75,7 @@ Namespace ViewModels
 
                 Dim content = Await response.Content.ReadAsStringAsync()
 
-                _currentWeather = JsonConvert.DeserializeObject(Of CurrentWeather)(content)
+                CurrentWeather = JsonConvert.DeserializeObject(Of CurrentWeather)(content)
 
             Catch ex As HttpRequestException
                 Debug.WriteLine("An error occurred during the HTTP request: " & ex.Message)
@@ -75,9 +95,8 @@ Namespace ViewModels
         End Sub
 
         Private Sub SetBackgroundImage(weatherCondition As String)
+            _backgroundImage = "https://images.pexels.com/photos/1254736/pexels-photo-1254736.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
             Select Case weatherCondition
-                Case "Cloudy"
-                    _backgroundImage = "https://images.pexels.com/photos/1254736/pexels-photo-1254736.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
                 Case "Sunny"
                     _backgroundImage = "https://images.pexels.com/photos/912364/pexels-photo-912364.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
                 Case "Rainy"

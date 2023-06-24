@@ -28,7 +28,7 @@
                         </Style>
                     </StackPanel.Resources>
 
-                    <TextBlock Text="{Binding Path=CurrentWeather.Geolocation, StringFormat='Geolocation: {0}', FallbackValue='N/A', PresentationTraceSources.TraceLevel=High}" />
+                    <TextBlock Text="{Binding Path=GeolocationDisplay, StringFormat='Geolocation: {0}', FallbackValue='N/A', PresentationTraceSources.TraceLevel=High}" />
 
                     <TextBlock>
                         <TextBlock.Text>
