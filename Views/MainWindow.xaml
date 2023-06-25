@@ -1,59 +1,57 @@
 ﻿<Window x:Class="Views.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     mc:Ignorable="d"
     WindowState="Maximized"
 >
 
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
-
         <Viewbox Stretch="Uniform">
             <Grid>
                 <Image Stretch="UniformToFill" Source="{Binding BackgroundImage}" />
                 <Rectangle Stretch="UniformToFill" Fill="Black" Opacity="0.5" />
 
-                <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
-                    <StackPanel.Resources>
-                        <Style TargetType="TextBlock">
-                            <Setter Property="Foreground" Value="White" />
-                            <Setter Property="FontSize" Value="48" />
-                        </Style>
-                    </StackPanel.Resources>
+                <StackPanel Orientation="Vertical" VerticalAlignment="Top" HorizontalAlignment="Center">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBox x:Name="InputBox" Width="200" Height="30" Text="{Binding InputGeolocation, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,10,0"/>
+                        <Button Content="Search Geolocation" Command="{Binding SubmitGeolocation}" />
+                    </StackPanel>
 
-                    <TextBlock Text="{Binding Path=GeolocationDisplay, StringFormat='Geolocation: {0}', FallbackValue='N/A', PresentationTraceSources.TraceLevel=High}" />
+                    <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
+                        <StackPanel.Resources>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Foreground" Value="White" />
+                                <Setter Property="FontSize" Value="48" />
+                            </Style>
+                        </StackPanel.Resources>
 
-                    <TextBlock>
-                        <TextBlock.Text>
-                            <MultiBinding StringFormat="{}Temperature: {0}°C / {1}°F">
-                                <Binding Path="CurrentWeather.TemperatureC" FallbackValue="N/A" />
-                                <Binding Path="CurrentWeather.TemperatureF" FallbackValue="N/A" />
-                            </MultiBinding>
-                        </TextBlock.Text>
-                    </TextBlock>
+                        <TextBlock Text="{Binding Path=GeolocationDisplay, StringFormat='Geolocation: {0}', FallbackValue='N/A', PresentationTraceSources.TraceLevel=High}" />
+                        <TextBlock>
+                            <TextBlock.Text>
+                                <MultiBinding StringFormat="{}Temperature: {0}°C / {1}°F">
+                                    <Binding Path="CurrentWeather.TemperatureC" FallbackValue="N/A" />
+                                    <Binding Path="CurrentWeather.TemperatureF" FallbackValue="N/A" />
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
 
-                    <TextBlock Text="{Binding Path=CurrentWeather.Condition, StringFormat='Condition: {0}', FallbackValue='N/A', PresentationTraceSources.TraceLevel=High}" />
-                    <TextBlock Text="{Binding Path=CurrentWeather.Humidity, StringFormat='Humidity: {0}', FallbackValue='N/A', PresentationTraceSources.TraceLevel=High}" />
+                        <TextBlock Text="{Binding Path=CurrentWeather.Condition, StringFormat='Condition: {0}', FallbackValue='N/A', PresentationTraceSources.TraceLevel=High}" />
+                        <TextBlock Text="{Binding Path=CurrentWeather.Humidity, StringFormat='Humidity: {0}', FallbackValue='N/A', PresentationTraceSources.TraceLevel=High}" />
 
-                    <TextBlock>
-                        <TextBlock.Text>
-                            <MultiBinding StringFormat="{}Wind: {0} KPH / {1} MPH">
-                                <Binding Path="CurrentWeather.WindKph" FallbackValue="N/A" />
-                                <Binding Path="CurrentWeather.WindMph" FallbackValue="N/A" />
-                            </MultiBinding>
-                        </TextBlock.Text>
-                    </TextBlock>
+                        <TextBlock>
+                            <TextBlock.Text>
+                                <MultiBinding StringFormat="{}Wind: {0} KPH / {1} MPH">
+                                    <Binding Path="CurrentWeather.WindKph" FallbackValue="N/A" />
+                                    <Binding Path="CurrentWeather.WindMph" FallbackValue="N/A" />
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+                    </StackPanel>
 
                 </StackPanel>
             </Grid>
         </Viewbox>
     </Grid>
-
 </Window>

@@ -8,16 +8,20 @@ Namespace ViewModels
     Public Class MainWindowViewModel
         Implements INotifyPropertyChanged
 
+        Private ReadOnly _weatherServiceApiUrl As String
+
         Public Event PropertyChanged As PropertyChangedEventHandler Implements INotifyPropertyChanged.PropertyChanged
         Private ReadOnly _httpClient As HttpClient
-
-        Private Const _weatherServiceApiUrl As String = "https://weather-service-vbnet.azurewebsites.net/api/currentweather"
 
         Private _currentWeather As CurrentWeather
         Private _backgroundImage As String
 
-        Public Sub New(httpClient As HttpClient)
-            _httpClient = httpClient
+        Public Sub New(
+            weatherServiceApiUrl As String,
+            HttpClient As HttpClient
+        )
+            _weatherServiceApiUrl = weatherServiceApiUrl
+            _httpClient = HttpClient
             _currentWeather = New CurrentWeather
             GetCurrentWeather()
         End Sub
