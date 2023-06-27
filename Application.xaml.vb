@@ -1,6 +1,7 @@
 ﻿Imports System.Net.Http
 Imports System.Configuration
 Imports Microsoft.Extensions.DependencyInjection
+Imports Application.Services
 Imports Application.ViewModels
 
 Class Application
@@ -10,13 +11,15 @@ Class Application
     Protected Overrides Sub OnStartup(e As StartupEventArgs)
         Dim services = New ServiceCollection()
 
+        'Register configuration variables
         Dim weatherServiceApiUrl As String = ConfigurationManager.AppSettings("WeatherServiceApi.Url")
-
         services.AddSingleton(Of String)(weatherServiceApiUrl)
 
+        'Register services
         services.AddSingleton(Of HttpClient)(New HttpClient())
+        services.AddTransient(Of CurrentWeatherService)
 
-        services.AddTransient(Of MainWindowViewModel)()
+        services.AddTransient(Of CurrentWeatherViewModel)
 
         _serviceProvider = services.BuildServiceProvider()
 
